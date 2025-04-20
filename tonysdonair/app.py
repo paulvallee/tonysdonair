@@ -267,35 +267,45 @@ QUIZ_HTML = '''
 </html>
 '''
 
-# app.py — Update the QUIZ_HTML template to include HTML skeleton and mobile stylesheet
 
-QUIZ_HTML = '''
+RESULT_HTML = '''
 <!doctype html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <title>Quiz {{ pizza.name }}</title>
+  <title>Results for {{ pizza.name }}</title>
 </head>
 <body class="container">
-  <h2>Quiz: {{ pizza.name }}</h2>
-  <form method="post" action="/submit_quiz">
-    {% for title, items in sections %}
-      <h3>{{ title }}</h3>
-      {% for i in items %}
-        <label>
-          <input type="checkbox" name="topping" value="{{ i }}"> {{ i }}
-        </label>
-      {% endfor %}
-    {% endfor %}
-    <button type="submit">Submit</button>
-  </form>
-  <form action="/">
-    <button>Home</button>
-  </form>
+  <h2>Results: {{ pizza.name }}</h2>
+
+  {% if image_url %}
+    <img src="{{ image_url }}" alt="{{ pizza.name }}">
+  {% endif %}
+
+  <p class="stats">
+    Correct Answers: {{ stats.correct[pizza.name] }} |
+    Incorrect Answers: {{ stats.wrong[pizza.name] }}
+  </p>
+
+  <h3>Outcomes</h3>
+  <ul class="outcomes">
+    {% for i in correct %}<li>YES {{ i }}</li>{% endfor %}
+    {% for i in missed  %}<li>MISSED {{ i }}</li>{% endfor %}
+    {% for i in extra   %}<li>NO {{ i }}</li>{% endfor %}
+  </ul>
+
+  <h3>Mnemonic</h3>
+  <p><em>{{ pizza.mnemonic }}</em></p>
+
+  <div class="nav-buttons">
+    <form action="/quiz"><button>Next Quiz</button></form>
+    <form action="/"><button>Home</button></form>
+  </div>
 </body>
 </html>
 '''
+
 
 
 # --- Main ---
