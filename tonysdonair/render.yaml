@@ -1,0 +1,10 @@
+# copy code
+# render.yaml
+services:
+  - type: web
+    name: mnemonic‑pizza‑app
+    env: python
+    plan: free
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn tonysdonair.app:app
