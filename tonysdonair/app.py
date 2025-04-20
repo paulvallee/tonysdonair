@@ -180,85 +180,124 @@ def submit_quiz():
 
 # --- HTML Templates ---
 # --- Home page (INDEX_HTML) ---
-INDEX_HTML = '''
 <!doctype html>
-<title>Tony’s Pizza Quiz</title>
-<h1>Welcome to Tony’s Pizza Quiz</h1>
-<form action="/review"><button>Learn</button></form>
-<form action="/quiz"><button>Quiz</button></form>
-<form action="/reset"><button>Reset Everything</button></form>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Tony’s Pizza Quiz</title>
+</head>
+<body class="container">
+  <h1>Welcome to Tony’s Pizza Quiz</h1>
+  <form action="/review"><button>Learn</button></form>
+  <form action="/quiz"><button>Quiz</button></form>
+  <form action="/reset"><button>Reset Everything</button></form>
+</body>
+</html>
 '''
+
+# copy code
+# In your app.py, update the REVIEW_HTML template to include the HTML skeleton and stylesheet.
 
 REVIEW_HTML = '''
 <!doctype html>
-<title>Learn {{ pizza.name }}</title>
-<h2>{{ pizza.name }}</h2>
-{% if image_url %}
-  <img src="{{ image_url }}" alt="{{ pizza.name }}"
-       style="max-width:400px; margin-bottom:1em;">
-{% endif %}
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Learn {{ pizza.name }}</title>
+</head>
+<body class="container">
+  <h2>{{ pizza.name }}</h2>
 
-<p><em>{{ pizza.mnemonic }}</em></p>
-<p>Seen: {{ view_count }} |
-   Right: {{ correct_count }} |
-   Wrong: {{ wrong_count }}</p>
+  {% if image_url %}
+    <img src="{{ image_url }}" alt="{{ pizza.name }}">
+  {% endif %}
 
-{% for title, items in sections %}
-  <h3>{{ title }}</h3>
-  <ul>{% for i in items %}<li>{{ i }}</li>{% endfor %}</ul>
-{% endfor %}
+  <p><em>{{ pizza.mnemonic }}</em></p>
+  <p class="stats">Seen: {{ view_count }} |
+     Right: {{ correct_count }} |
+     Wrong: {{ wrong_count }}</p>
 
-<form action="/quiz">
-  <button {% if not quiz_ready %}disabled{% endif %}>Quiz this pizza</button>
-</form>
-<form action="/review"><button>Next</button></form>
-<form action="/"><button>Home</button></form>
+  {% for title, items in sections %}
+    <h3>{{ title }}</h3>
+    <ul>
+      {% for i in items %}
+        <li>{{ i }}</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+
+  <form action="/quiz"><button {% if not quiz_ready %}disabled{% endif %}>
+      Quiz this pizza
+  </button></form>
+  <form action="/review"><button>Next</button></form>
+  <form action="/"><button>Home</button></form>
+</body>
+</html>
 '''
+
+
+# app.py — Update the QUIZ_HTML template to include HTML skeleton and mobile stylesheet
 
 QUIZ_HTML = '''
 <!doctype html>
-<title>Quiz {{ pizza.name }}</title>
-<h2>Quiz: {{ pizza.name }}</h2>
-<form method="post" action="/submit_quiz">
-  {% for title, items in sections %}
-    <h3>{{ title }}</h3>
-    {% for i in items %}
-      <label>
-        <input type="checkbox" name="topping" value="{{ i }}"> {{ i }}
-      </label><br>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Quiz {{ pizza.name }}</title>
+</head>
+<body class="container">
+  <h2>Quiz: {{ pizza.name }}</h2>
+  <form method="post" action="/submit_quiz">
+    {% for title, items in sections %}
+      <h3>{{ title }}</h3>
+      {% for i in items %}
+        <label>
+          <input type="checkbox" name="topping" value="{{ i }}"> {{ i }}
+        </label>
+      {% endfor %}
     {% endfor %}
-  {% endfor %}
-  <button type="submit">Submit</button>
-</form>
-<form action="/"><button>Home</button></form>
+    <button type="submit">Submit</button>
+  </form>
+  <form action="/">
+    <button>Home</button>
+  </form>
+</body>
+</html>
 '''
 
-RESULT_HTML = '''
+# app.py — Update the QUIZ_HTML template to include HTML skeleton and mobile stylesheet
+
+QUIZ_HTML = '''
 <!doctype html>
-<title>Results for {{ pizza.name }}</title>
-<h2>Results: {{ pizza.name }}</h2>
-
-{% if image_url %}
-  <img src="{{ image_url }}" alt="{{ pizza.name }}"
-       style="max-width:400px; margin-bottom:1em;">
-{% endif %}
-
-<p>Correct Answers: {{ stats.correct[pizza.name] }} |
-   Incorrect Answers: {{ stats.wrong[pizza.name] }}</p>
-
-<h3>Outcomes</h3>
-<ul>
-  {% for i in correct %}<li>YES {{ i }}</li>{% endfor %}
-  {% for i in missed  %}<li>MISSED {{ i }}</li>{% endfor %}
-  {% for i in extra   %}<li>NO {{ i }}</li>{% endfor %}
-</ul>
-
-<h3>Mnemonic</h3>
-<p><em>{{ pizza.mnemonic }}</em></p>
-
-<form action="/quiz"><button>Next Quiz</button></form>
-<form action="/"><button>Home</button></form>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Quiz {{ pizza.name }}</title>
+</head>
+<body class="container">
+  <h2>Quiz: {{ pizza.name }}</h2>
+  <form method="post" action="/submit_quiz">
+    {% for title, items in sections %}
+      <h3>{{ title }}</h3>
+      {% for i in items %}
+        <label>
+          <input type="checkbox" name="topping" value="{{ i }}"> {{ i }}
+        </label>
+      {% endfor %}
+    {% endfor %}
+    <button type="submit">Submit</button>
+  </form>
+  <form action="/">
+    <button>Home</button>
+  </form>
+</body>
+</html>
 '''
+
 
 # --- Main ---
 if __name__ == '__main__':
