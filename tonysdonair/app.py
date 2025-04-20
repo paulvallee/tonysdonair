@@ -178,17 +178,16 @@ def submit_quiz():
     resp.set_cookie('user_id', user_id)
     return resp
 
-# --- HTML Templates ---
-# --- Home page (INDEX_HTML) ---
+INDEX_HTML = '''
 <!doctype html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <title>Tony’s Pizza Quiz</title>
+  <title>Tony's Pizza Quiz</title>
 </head>
 <body class="container">
-  <h1>Welcome to Tony’s Pizza Quiz</h1>
+  <h1>Welcome to Tony's Pizza Quiz</h1>
   <form action="/review"><button>Learn</button></form>
   <form action="/quiz"><button>Quiz</button></form>
   <form action="/reset"><button>Reset Everything</button></form>
