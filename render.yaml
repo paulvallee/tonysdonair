@@ -1,17 +1,13 @@
-# copy code
-# render.yaml
 services:
   - type: web
     name: mnemonic‑pizza‑app
     env: python
     plan: free
 
-    # ensure the inner tonysdonair/ folder is on PYTHONPATH
+    # make sure Python can import tonysdonair/
     envVars:
       - key: PYTHONPATH
-        value: "./tonysdonair"
+        value: "./"
 
     buildCommand: pip install -r requirements.txt
-
-    # tell Gunicorn to load your app from tonysdonair/app.py
     startCommand: gunicorn tonysdonair.app:app
