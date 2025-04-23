@@ -178,10 +178,38 @@ def submit_quiz():
     resp.set_cookie('user_id', user_id)
     return resp
 
+@app.route('/status')
+def status():
+    user_id, users = get_user()
+    stats = users[user_id]
+
+    mastered = []
+    learning = []
+    need_help = []
+
+    for p in PIZZAS:
+        name = p['name']
+        c = stats['correct'][name]
+        # categorize by total correct count
+        if c >= 3:
+            mastered.append(name)
+        elif c > 0:
+            learning.append(name)
+        else:
+            need_help.append(name)
+
+    return render_template_string(STATUS_HTML,
+        mastered=mastered,
+        learning=learning,
+        need_help=need_help,
+    )
+
 INDEX_HTML = '''
 <!doctype html>
-<html>
+<html lang="en" translate="no">
 <head>
+  <meta http-equiv="Content-Language" content="en">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <title>Tony's Pizza Quiz</title>
@@ -190,18 +218,22 @@ INDEX_HTML = '''
   <h1>Welcome to Tony's Pizza Quiz</h1>
   <form action="/review"><button>Learn</button></form>
   <form action="/quiz"><button>Quiz</button></form>
+  <form action="/status"><button>Scores</button></form>    <!-- New button -->
   <form action="/reset"><button>Reset Everything</button></form>
 </body>
 </html>
 '''
+
 
 # copy code
 # In your app.py, update the REVIEW_HTML template to include the HTML skeleton and stylesheet.
 
 REVIEW_HTML = '''
 <!doctype html>
-<html>
+<html lang="en" translate="no">
 <head>
+  <meta http-equiv="Content-Language" content="en">
+  <meta name="google" content="notranslate">  
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <title>Learn {{ pizza.name }}</title>
@@ -236,13 +268,65 @@ REVIEW_HTML = '''
 </html>
 '''
 
+STATUS_HTML = '''
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+  <meta http-equiv="Content-Language" content="en">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Your Pizza Status</title>
+</head>
+<body class="container">
+  <h2>Your Learning Status</h2>
+
+  <h3>Mastered (3+ correct)</h3>
+  {% if mastered %}
+    <ul>
+      {% for name in mastered %}<li>{{ name }}</li>{% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven’t mastered any pizzas yet.</p>
+  {% endif %}
+
+  <h3>Learning (1–2 correct)</h3>
+  {% if learning %}
+    <ul>
+      {% for name in learning %}<li>{{ name }}</li>{% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven’t started learning any pizzas yet.</p>
+  {% endif %}
+
+  <h3>Need Help (0 correct)</h3>
+  {% if need_help %}
+    <ul>
+      {% for name in need_help %}<li>{{ name }}</li>{% endfor %}
+    </ul>
+  {% else %}
+    <p>Great job — you have attempted all pizzas!</p>
+  {% endif %}
+
+  <div class="nav-buttons">
+    <form action="/"><button>Home</button></form>
+    <form action="/review"><button>Learn</button></form>
+    <form action="/quiz"><button>Quiz</button></form>
+  </div>
+</body>
+</html>
+'''
+
+
 
 # app.py — Update the QUIZ_HTML template to include HTML skeleton and mobile stylesheet
 
 QUIZ_HTML = '''
 <!doctype html>
-<html>
+<html lang="en" translate="no">
 <head>
+  <meta http-equiv="Content-Language" content="en">
+  <meta name="google" content="notranslate">  
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <title>Quiz {{ pizza.name }}</title>
@@ -270,8 +354,11 @@ QUIZ_HTML = '''
 
 RESULT_HTML = '''
 <!doctype html>
-<html>
+<html lang="en">
+<html lang="en" translate="no">
 <head>
+  <meta http-equiv="Content-Language" content="en">
+  <meta name="google" content="notranslate">  
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <title>Results for {{ pizza.name }}</title>
